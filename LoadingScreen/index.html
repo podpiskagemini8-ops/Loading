@@ -14,11 +14,8 @@
             font-family: 'Segoe UI', Tahoma, sans-serif;
         }
         
-        /* Фон с твоей картинкой */
-        .bg {
-            background-image: url('background.jpeg'); /* Имя твоей картинки */
-            background-size: cover;
-            background-position: center;
+        /* Контейнер для фоновых изображений */
+        #bg-container {
             width: 100%;
             height: 100%;
             position: absolute;
@@ -26,6 +23,22 @@
             /* Легкое размытие для красоты, если хочешь - удали эту строчку */
             filter: blur(4px) brightness(0.7); 
             transform: scale(1.05); /* Убираем белые края от размытия */
+        }
+
+        .bg-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .bg-layer.active {
+            opacity: 1;
         }
 
         /* Темная накладка поверх картинки и контент */
@@ -74,7 +87,9 @@
     </style>
 </head>
 <body>
-    <div class="bg"></div>
+    <div id="bg-container">
+        <!-- Фоны будут добавляться сюда через JavaScript -->
+    </div>
     <div class="content">
         <div class="loader"></div>
         <h1>ДОБРО ПОЖАЛОВАТЬ</h1>
@@ -91,6 +106,46 @@
         audio.play().catch(function(error) {
             console.log("Автоплей заблокирован браузером, ждем загрузки движка");
         });
+
+        // Список изображений (включая оригинальный фон)
+        const images = [
+            'background.jpeg',
+            'images/ira1.jpg',
+            'images/eta1.jpg',
+            'images/ira2.jpg',
+            'images/eta2.jpg'
+        ];
+
+        const container = document.getElementById('bg-container');
+        let currentIndex = 0;
+
+        // Создаем div для каждого изображения
+        images.forEach((src, index) => {
+            const div = document.createElement('div');
+            div.className = 'bg-layer';
+            div.style.backgroundImage = `url('${src}')`;
+            if (index === 0) {
+                div.classList.add('active'); // Первое изображение активно по умолчанию
+            }
+            container.appendChild(div);
+        });
+
+        const layers = document.querySelectorAll('.bg-layer');
+
+        // Функция для смены изображений
+        function changeBackground() {
+            // Убираем класс active у текущего изображения
+            layers[currentIndex].classList.remove('active');
+
+            // Переходим к следующему
+            currentIndex = (currentIndex + 1) % layers.length;
+
+            // Добавляем класс active новому
+            layers[currentIndex].classList.add('active');
+        }
+
+        // Запускаем интервал каждые 5 секунд (5000 мс)
+        setInterval(changeBackground, 5000);
     </script>
 </body>
 </html>
