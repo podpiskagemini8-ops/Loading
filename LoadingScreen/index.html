@@ -14,9 +14,8 @@
             font-family: 'Segoe UI', Tahoma, sans-serif;
         }
         
-        /* Фон с твоей картинкой */
+        /* Настройки фонов */
         .bg {
-            background-image: url('background.jpeg'); /* Имя твоей картинки */
             background-size: cover;
             background-position: center;
             width: 100%;
@@ -26,6 +25,12 @@
             /* Легкое размытие для красоты, если хочешь - удали эту строчку */
             filter: blur(4px) brightness(0.7); 
             transform: scale(1.05); /* Убираем белые края от размытия */
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .bg.active {
+            opacity: 1;
         }
 
         /* Темная накладка поверх картинки и контент */
@@ -74,7 +79,10 @@
     </style>
 </head>
 <body>
-    <div class="bg"></div>
+    <div class="bg active" style="background-image: url('background.jpeg');"></div>
+    <div class="bg" style="background-image: url('bckg2.jpeg');"></div>
+    <div class="bg" style="background-image: url('bckg3.jpeg');"></div>
+    <div class="bg" style="background-image: url('bckg4.jpeg');"></div>
     <div class="content">
         <div class="loader"></div>
         <h1>ДОБРО ПОЖАЛОВАТЬ</h1>
@@ -86,11 +94,20 @@
 
     <script>
         var audio = document.getElementById("bg-music");
-        audio.volume = 0.15; // Громкость 15%
+        audio.volume = 0.05; // Громкость 5% (сделали еще тише)
         
         audio.play().catch(function(error) {
             console.log("Автоплей заблокирован браузером, ждем загрузки движка");
         });
+
+        // Плавная смена фонов каждые 5 секунд
+        var bgs = document.querySelectorAll('.bg');
+        var currentBg = 0;
+        setInterval(function() {
+            bgs[currentBg].classList.remove('active');
+            currentBg = (currentBg + 1) % bgs.length;
+            bgs[currentBg].classList.add('active');
+        }, 5000);
     </script>
 </body>
 </html>
